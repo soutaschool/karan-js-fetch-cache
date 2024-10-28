@@ -2,6 +2,8 @@ version: '3'
 services:
   json-server:
     image: clue/json-server
+    # delay the response
+    command: -d 2000 /data/db.json
     volumes:
       - ./db.json:/data/db.json
     ports:
