@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PerformanceChart from "./components/PerformanceChart";
+
 type Post = {
 	id: number;
 	title: string;
@@ -19,9 +20,13 @@ function App() {
 		setLoading(true);
 		const startTime = performance.now();
 		try {
-			const response = await fetch("http://localhost:3001/posts", {
+			const requestInit: RequestInit = {
 				cache: cacheStrategy,
-			});
+			};
+			if (cacheStrategy === "only-if-cached") {
+				requestInit.mode = "same-origin";
+			}
+			const response = await fetch("/api/posts", requestInit);
 			if (!response.ok) {
 				throw new Error("Network response was not ok");
 			}
@@ -49,7 +54,7 @@ function App() {
 	};
 
 	return (
-		<div className="p-4">
+		<div className="p-4 bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen">
 			<h1 className="text-2xl font-bold">Fetch API Cache Strategies</h1>
 			<p className="my-2">キャッシュ戦略を選択して、データを取得します。</p>
 			<div className="my-4">
@@ -57,8 +62,10 @@ function App() {
 					(strategy) => (
 						<button
 							key={strategy}
-							className={`mr-2 px-4 py-2 text-white rounded ${
-								cacheStrategy === strategy ? "bg-blue-700" : "bg-blue-500"
+							className={`mr-2 px-4 py-2 rounded ${
+								cacheStrategy === strategy
+									? "bg-blue-700 text-white"
+									: "bg-blue-500 text-white dark:bg-blue-400 dark:text-black"
 							}`}
 							onClick={() =>
 								handleCacheStrategyChange(strategy as RequestCache)
@@ -71,7 +78,7 @@ function App() {
 				)}
 			</div>
 			<button
-				className="px-4 py-2 bg-green-500 text-white rounded"
+				className="px-4 py-2 bg-green-500 text-white rounded dark:bg-green-400 dark:text-black"
 				onClick={fetchData}
 				disabled={loading}
 				type="button"
