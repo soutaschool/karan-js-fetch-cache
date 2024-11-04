@@ -59,3 +59,59 @@ if (cacheStrategy === "only-if-cached") {
   requestInit.mode = "same-origin";
 }
 ```
+
+## Workflow
+
+### Default
+
+```mermaid
+flowchart TD
+    Start[Fetch Request Initiated] --> CheckCacheControl[ Cache-Control Header]
+    CheckCacheControl --> IsCacheValid{Is Cache Valid?}
+    IsCacheValid -->|Yes| ServeFromCache[Serve Data from Cache]
+    IsCacheValid -->|No| FetchFromNetwork[Fetch Data from Network]
+    FetchFromNetwork --> StoreInCache[Store Data in Cache]
+    FetchFromNetwork --> ServeData[Serve Data to User]
+```
+
+### No-store
+
+```mermaid
+flowchart TD
+    Start[Fetch Request Initiated] --> IgnoreCache[Ignore Cache]
+    IgnoreCache --> FetchNetwork[Fetch Data from Network]
+    FetchNetwork --> ServeData[Serve Data to User]
+    FetchNetwork --> DoNotStore[Do Not Store in Cache]
+```
+
+### Reload
+
+```mermaid
+flowchart TD
+    Start[Fetch Request Initiated] --> IgnoreCache[Ignore Existing Cache]
+    IgnoreCache --> FetchNetwork[Fetch Data from Network]
+    FetchNetwork --> UpdateCache[Update Cache with Response]
+    FetchNetwork --> ServeData[Serve Data to User]
+```
+
+### Force-cache
+
+```mermaid
+flowchart TD
+    Start[Fetch Request Initiated] --> CheckCache{Is Data in Cache?}
+
+    CheckCache -->|Yes| ServeFromCache[Serve Data from Cache]
+    CheckCache -->|No| FetchFromNetwork[Fetch Data from Network]
+    FetchFromNetwork --> StoreInCache[Store Data in Cache]
+    FetchFromNetwork --> ServeData[Serve Data to User]
+```
+
+### Only-if-cached
+
+```mermaid
+flowchart TD
+    Start[Fetch Request Initiated] --> UseOnlyIfCached[" 'only-if-cached' Strategy"]
+    UseOnlyIfCached --> CheckCache{Is Data in Cache?}
+    CheckCache -->|Yes| ServeCache[Serve Data from Cache]
+    CheckCache -->|No| FailRequest[Fail the Request]
+```
