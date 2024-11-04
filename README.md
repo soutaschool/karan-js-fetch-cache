@@ -1,5 +1,25 @@
 # JS Fetch document
 
+## How to run
+
+- install package
+
+```bash
+npm install
+```
+
+- automatic creating the mock data
+
+```bash
+npm run generate
+```
+
+- start the application
+
+```bash
+npm run start
+```
+
 ## Notes
 
 ### only-if-cached
@@ -7,6 +27,7 @@
 Works only under certain conditions
 
 - Requests must be of the same origin
+- The mode option must be set to 'same-origin'. The default 'cors' will not work.
 
 #### Vite configuration
 
@@ -29,34 +50,12 @@ sequenceDiagram
     deactivate ViteDevServer
 ```
 
-- The mode option must be set to 'same-origin'. The default 'cors' will not work.
-
 #### App.tsx ... fetchData
 
 changed default mode of fetch from 'cors' to 'same-origin' if only-if-cached
 
 ```tsx
-if (cacheStrategy === 'only-if-cached') {
-  requestInit.mode = 'same-origin';
+if (cacheStrategy === "only-if-cached") {
+  requestInit.mode = "same-origin";
 }
-```
-
-## How to run
-
-1. install package
-
-```bash
-npm install
-```
-
-2. automatic creating the mock data
-
-```bash
-cd mock-server && node generateData.js
-```
-
-3. start up docker for json server
-
-```bash
-cd mock-server && docker compose up -d 
 ```
